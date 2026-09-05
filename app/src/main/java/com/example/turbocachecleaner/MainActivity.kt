@@ -8,6 +8,8 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.Process
 import android.os.storage.StorageManager
 import android.provider.Settings
@@ -17,13 +19,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.*
-import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
-    // Data class to hold package name and its human-readable name
     data class AppCacheItem(val packageName: String, val appName: String, val cacheSize: Long)
-
     private val appsToClean = mutableListOf<AppCacheItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +36,6 @@ class MainActivity : AppCompatActivity() {
         val tvTotalCache = findViewById<TextView>(R.id.tvTotalCache)
         val tvProgress = findViewById<TextView>(R.id.tvProgress)
 
-        // Connect the UI to the background service's progress updates
         CacheClearAccessibilityService.onProgressUpdate = { progressText ->
             runOnUiThread { tvProgress.text = progressText }
         }
@@ -47,7 +45,11 @@ class MainActivity : AppCompatActivity() {
                 btnTurbo.text = "TURBO CLEAN"
                 btnTurbo.setBackgroundColor(Color.parseColor("#FF0000"))
                 tvProgress.text = "All Cache Cleaned!"
-                btnScan.performClick() // Rescan automatically when done
+                
+                // Add a small delay before auto-rescanning so the UI can settle
+                Handler(Looper.getMainLooper()).postDelayed({
+                    btnScan.performClick()
+                }, 1000)
             }
         }
 
@@ -62,7 +64,6 @@ class MainActivity : AppCompatActivity() {
             btnScan.isEnabled = false
             appsToClean.clear()
 
-            // Run scanner in background to not freeze the app
             CoroutineScope(Dispatchers.IO).launch {
                 val pm = packageManager
                 val storageStatsManager = getSystemService(STORAGE_STATS_SERVICE) as StorageStatsManager
@@ -79,20 +80,17 @@ class MainActivity : AppCompatActivity() {
                             Process.myUserHandle()
                         )
                         
-                        // ONLY add apps that actually have cache to clean (> 12 KB to avoid system ghost caches)
                         if (stats.cacheBytes > 12000) {
                             val appName = pm.getApplicationLabel(appInfo).toString()
                             appsToClean.add(AppCacheItem(appInfo.packageName, appName, stats.cacheBytes))
                             totalCacheBytes += stats.cacheBytes
                         }
-                    } catch (e: PackageManager.NameNotFoundException) {
-                        continue
-                    } catch (e: IOException) {
+                    } catch (e: Exception) {
+                        // Crucial fix: Catch ALL exceptions so the coroutine doesn't silently die
                         continue
                     }
                 }
 
-                // Sort largest cache first
                 appsToClean.sortByDescending { it.cacheSize }
 
                 withContext(Dispatchers.Main) {
@@ -127,7 +125,6 @@ class MainActivity : AppCompatActivity() {
                 CacheClearAccessibilityService.appQueue.clear()
                 CacheClearAccessibilityService.appNameQueue.clear()
 
-                // Load queues
                 appsToClean.forEach { 
                     CacheClearAccessibilityService.appQueue.add(it.packageName)
                     CacheClearAccessibilityService.appNameQueue.add(it.appName)

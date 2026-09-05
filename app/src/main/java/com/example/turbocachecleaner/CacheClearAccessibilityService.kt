@@ -29,7 +29,6 @@ class CacheClearAccessibilityService : AccessibilityService() {
             val nextPackage = appQueue[0]
             val nextAppName = appNameQueue[0]
             
-            // Send live update to UI
             onProgressUpdate?.invoke("Cleaning: $nextAppName (${appQueue.size} remaining)")
             
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
@@ -50,37 +49,54 @@ class CacheClearAccessibilityService : AccessibilityService() {
         if (!isProcessing || appQueue.isEmpty()) return
         val rootNode = rootInActiveWindow ?: return
 
-        // Step 1: Click "Storage"
-        val storageNodes = rootNode.findAccessibilityNodeInfosByText("Storage")
-        if (storageNodes.isNotEmpty()) {
-            val storageTextNode = storageNodes[0]
-            val clickableStorageNode = if (storageTextNode.isClickable) storageTextNode else storageTextNode.parent
-            
-            if (clickableStorageNode?.isClickable == true) {
-                clickableStorageNode.performAction(AccessibilityNodeInfo.ACTION_CLICK)
-                return 
-            }
-        }
-
-        // Step 2: Click "Clear cache"
+        // STEP 1: Check for "Clear cache" FIRST to prevent the MagicOS back-button loop
         val cacheNodes = rootNode.findAccessibilityNodeInfosByText("Clear cache")
         if (cacheNodes.isNotEmpty()) {
             val cacheTextNode = cacheNodes[0]
             val clickableCacheNode = if (cacheTextNode.isClickable) cacheTextNode else cacheTextNode.parent
             
             if (clickableCacheNode != null && clickableCacheNode.isEnabled) {
+                // Button is enabled (Cache > 0)
                 clickableCacheNode.performAction(AccessibilityNodeInfo.ACTION_CLICK)
                 
                 appQueue.removeAt(0)
                 appNameQueue.removeAt(0)
                 
                 CoroutineScope(Dispatchers.Main).launch {
-                    delay(600) // Wait for cache to clear
+                    delay(600) 
                     performGlobalAction(GLOBAL_ACTION_BACK)
-                    delay(400) // Wait for UI transition
+                    delay(400) 
                     performGlobalAction(GLOBAL_ACTION_BACK)
-                    delay(200) // Wait before firing next intent
+                    delay(300) 
                     openNextApp(this@CacheClearAccessibilityService)
+                }
+            } else {
+                // Button is greyed out (Cache is 0)
+                appQueue.removeAt(0)
+                appNameQueue.removeAt(0)
+                
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(300) 
+                    performGlobalAction(GLOBAL_ACTION_BACK)
+                    delay(400) 
+                    performGlobalAction(GLOBAL_ACTION_BACK)
+                    delay(300) 
+                    openNextApp(this@CacheClearAccessibilityService)
+                }
+            }
+            // CRITICAL: Return so it doesn't try to click "Storage" on this screen
+            return 
+        }
+
+        // STEP 2: If we are here, "Clear cache" isn't on screen. Look for "Storage".
+        val storageNodes = rootNode.findAccessibilityNodeInfosByText("Storage")
+        if (storageNodes.isNotEmpty()) {
+            // Loop through all nodes with "Storage" and click the first valid one
+            for (node in storageNodes) {
+                val clickableStorageNode = if (node.isClickable) node else node.parent
+                if (clickableStorageNode?.isClickable == true) {
+                    clickableStorageNode.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                    return 
                 }
             }
         }
