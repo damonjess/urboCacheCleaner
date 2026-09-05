@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">urboCacheCleaner</string>
+    <string name="app_name">TurboCacheCleaner</string>
+    <string name="accessibility_desc">Required to automate cache cleaning.</string>
 </resources>

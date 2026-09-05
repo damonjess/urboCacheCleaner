@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ready to Scan"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/tvTotalCache"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Cache: 0 B"
+        android:textSize="18sp"
+        android:textColor="#FF9800"
+        android:textStyle="bold"
+        android:layout_marginBottom="24dp"/>
+
+    <Button
+        android:id="@+id/btnScan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Scan Apps" />
+
+    <TextView
+        android:id="@+id/tvAppCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Apps with Cache: 0"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="24dp"/>
+
+    <Button
+        android:id="@+id/btnTurbo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TURBO CLEAN"
+        android:backgroundTint="#FF0000"
+        android:textColor="#FFFFFF"
+        android:enabled="false"/>
+
+    <TextView
+        android:id="@+id/tvProgress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textAlignment="center"
+        android:textStyle="italic"
+        android:layout_marginTop="16dp"/>
+
+</LinearLayout>

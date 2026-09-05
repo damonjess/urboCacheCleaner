@@ -4,13 +4,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.urbocachecleaner"
+    namespace = "com.example.turbocachecleaner"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.example.urbocachecleaner"
+        applicationId = "com.example.turbocachecleaner"
         minSdk = 26
         targetSdk = 37
         versionCode = 1
@@ -36,6 +36,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.appcompat)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
