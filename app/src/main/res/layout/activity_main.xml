@@ -1,60 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:gravity="center_horizontal">
+    android:fillViewport="true">
 
-    <TextView
-        android:id="@+id/tvStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ready to Scan"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp"/>
-
-    <TextView
-        android:id="@+id/tvTotalCache"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Total Cache: 0 B"
-        android:textSize="18sp"
-        android:textColor="#FF9800"
-        android:textStyle="bold"
-        android:layout_marginBottom="24dp"/>
-
-    <Button
-        android:id="@+id/btnScan"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Scan Apps" />
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:gravity="center_horizontal">
 
-    <TextView
-        android:id="@+id/tvAppCount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Apps with Cache: 0"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="24dp"/>
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ready to Scan"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp"/>
 
-    <Button
-        android:id="@+id/btnTurbo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TURBO CLEAN"
-        android:backgroundTint="#FF0000"
-        android:textColor="#FFFFFF"
-        android:enabled="false"/>
+        <TextView
+            android:id="@+id/tvTotalCache"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total Cache: 0 B"
+            android:textSize="18sp"
+            android:textColor="#FF9800"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp"/>
 
-    <TextView
-        android:id="@+id/tvProgress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textAlignment="center"
-        android:textStyle="italic"
-        android:layout_marginTop="16dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-</LinearLayout>
+            <Button
+                android:id="@+id/btnScan"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Scan Apps" />
+
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:id="@+id/btnTurbo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="TURBO CLEAN"
+                android:backgroundTint="#FF0000"
+                android:textColor="#FFFFFF"
+                android:enabled="false"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvAppCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Apps with Cache: 0"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/tvProgress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textAlignment="center"
+            android:textStyle="italic"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"/>
+
+        <ListView
+            android:id="@+id/lvApps"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:nestedScrollingEnabled="true"
+            android:divider="?android:attr/listDivider"
+            android:dividerHeight="1dp"
+            android:layout_marginBottom="16dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#33000000"
+            android:layout_marginBottom="16dp"/>
+
+        <Button
+            android:id="@+id/btnHealthCheck"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Why is my phone slow?"
+            android:backgroundTint="#3F51B5"
+            android:textColor="#FFFFFF"/>
+
+        <Button
+            android:id="@+id/btnHonorFix"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Honor Optimization Checklist"
+            android:backgroundTint="#009688"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="12dp"/>
+
+    </LinearLayout>
+</ScrollView>
