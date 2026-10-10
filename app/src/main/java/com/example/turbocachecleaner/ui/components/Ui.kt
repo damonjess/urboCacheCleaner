@@ -297,11 +297,16 @@ fun AppCacheRow(
     onToggle: () -> Unit,
     modifier: Modifier = Modifier,
     status: CleanStatus = CleanStatus.WAITING,
+    onClean: (() -> Unit)? = null,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
+            .background(
+                if (checked) MaterialTheme.colorScheme.primary.copy(alpha = 0.08f)
+                else Color.Transparent,
+            )
             .clickable { onToggle() }
             .padding(vertical = 8.dp, horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -344,13 +349,33 @@ fun AppCacheRow(
             )
         }
         Spacer(Modifier.width(12.dp))
-        Text(
-            readableSize,
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Bold,
-            maxLines = 1,
-        )
+        Column(horizontalAlignment = Alignment.End) {
+            Text(
+                readableSize,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+            )
+            if (onClean != null && status == CleanStatus.WAITING) {
+                Spacer(Modifier.height(4.dp))
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(MaterialTheme.colorScheme.primary)
+                        .clickable { onClean() }
+                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        "Clean",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+            }
+        }
     }
 }
 

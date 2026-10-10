@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +28,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -212,6 +214,43 @@ fun HomeScreen(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
+        bottomBar = {
+            if (selected.isNotEmpty() && !cleaning && !scanning && usageGranted && accessGranted) {
+                Surface(
+                    tonalElevation = 8.dp,
+                    shadowElevation = 8.dp,
+                    color = MaterialTheme.colorScheme.surface,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Column {
+                            Text(
+                                if (selected.size == 1) "1 app selected" else "${selected.size} apps selected",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Text(
+                                "${readable(selectedSize)} to free",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        GradientButton(
+                            text = if (selected.size == 1) "CLEAN 1 APP" else "CLEAN ${selected.size} APPS",
+                            onClick = { oneTapClean() },
+                            gradient = TurboCleanGradient,
+                            modifier = Modifier.width(160.dp),
+                        )
+                    }
+                }
+            }
+        },
         topBar = {
             TopAppBar(
                 title = {
@@ -304,6 +343,7 @@ fun HomeScreen(
                                 !accessGranted -> "ENABLE AUTO-CLEAN"
                                 scanning -> "SCANNING…"
                                 apps.isEmpty() -> "ONE-TAP CLEAN"
+                                selected.size == 1 -> "CLEAN 1 APP"
                                 else -> "CLEAN ${selected.size} APPS"
                             }
                             GradientButton(
@@ -480,6 +520,16 @@ fun HomeScreen(
                                 selected - item.packageName
                             } else {
                                 selected + item.packageName
+                            }
+                        },
+                        onClean = {
+                            if (!usageGranted) {
+                                context.startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+                            } else if (!accessGranted) {
+                                context.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+                            } else if (!cleaning && !scanning) {
+                                selected = setOf(item.packageName)
+                                startCleaning(source = listOf(item), selectedSet = setOf(item.packageName))
                             }
                         },
                         status = statuses[item.packageName] ?: CleanStatus.WAITING,
