@@ -43,11 +43,49 @@
 
 ---
 
+## UI
+
+The app is a single-activity **Jetpack Compose** app using **Material 3**, with a dark-first
+palette and an edge-to-edge layout.
+
+- **Home:** hero card with a storage ring, the one-tap action, permission cards, live stats,
+tool tiles, and the searchable/sortable app list with per-app clean status.
+- **Device health:** real RAM / storage / battery / thermal readings plus the verified cause list.
+- **Optimization checklist:** a 12-step list with persisted progress.
+- **Honor / MagicOS checklist:** the guided walkthrough, rendered natively with per-step actions.
+- **Settings:** minimum cache size, clear delay, system-app toggle, haptics, keep-screen-on.
+
+Navigation is a small state machine (`AppScreen`) rather than a nav library, so there are no
+navigation dependencies to pull in.
+
+---
+
 ## How to Use
 
 1. **Permissions:**
    - Grant **Usage Access** when prompted to allow cache size scanning via `StorageStatsManager`.
    - Enable **TurboCacheCleaner Accessibility Service** in Android Settings to allow automated cache clearing.
-2. **Scan:** Tap **Scan Apps** to view a breakdown of apps and their current cache size.
-3. **Clean:** Tap **TURBO CLEAN** to start automated cache clearing across all queued apps.
-4. **Diagnostics:** Tap **Why is my phone slow?** or **Honor Optimization Checklist** for diagnostic reports and system setting guidance.
+2. **One-tap clean:** Tap the big gradient button. If nothing has been scanned yet it scans
+   first and then starts cleaning automatically, so a single tap is enough.
+3. **Or scan first:** Tap **SCAN** to review the list, then adjust with the checkboxes,
+   the search box, and the Largest / Smallest / Name sort chips.
+4. **Stop any time:** Tap **STOP** (or the progress button) while a run is in flight.
+5. **Diagnostics:** Tap **Why is my phone slow?** for the device health report, or
+   **Honor / MagicOS checklist** for the guided settings walkthrough.
+
+---
+
+## Project layout
+
+```
+com/example/turbocachecleaner/
+  MainActivity.kt                    Compose host, re-checks permissions on resume
+  CacheClearAccessibilityService.kt  TurboCleaner queue + accessibility automation
+  DeviceHealthChecker.kt             No-root diagnostics
+  HonorRepairAssistant.kt            Guided MagicOS steps
+  data/    CacheScanner, Prefs
+  model/   AppCacheItem, StorageInfo, SortOrder, CleanStatus, AppScreen
+  ui/      HomeScreen, DeviceHealthScreen, ChecklistScreen, HonorChecklistScreen,
+           SettingsScreen, TurboCacheApp, theme/, components/
+  util/    Permissions, AppFilters
+```

@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">TurboCacheCleaner</string>
-    <string name="accessibility_desc">Required to automate cache cleaning.</string>
+    <string name="app_name">Turbo Cache Cleaner</string>
+    <string name="accessibility_desc">Lets Turbo Cache Cleaner open each app\'s storage settings and tap \"Clear cache\" automatically for you. No personal data is read or sent anywhere.</string>
 </resources>

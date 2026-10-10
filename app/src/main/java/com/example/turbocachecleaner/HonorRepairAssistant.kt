@@ -19,7 +19,7 @@ import android.widget.Toast
  */
 object HonorRepairAssistant {
 
-    private data class Step(
+    data class Step(
         val title: String,
         val body: String,
         val actionLabel: String? = null,
@@ -87,6 +87,9 @@ object HonorRepairAssistant {
             )
         )
     }
+
+    /** The same steps the guided dialog walks through, exposed for the Compose checklist UI. */
+    fun steps(activity: Activity): List<Step> = buildSteps(activity)
 
     fun show(activity: Activity) {
         val steps = buildSteps(activity)

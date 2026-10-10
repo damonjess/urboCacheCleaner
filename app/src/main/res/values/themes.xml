@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.TurboCacheCleaner" parent="Theme.AppCompat.DayNight.NoActionBar" />
-    <style name="Theme.UrboCacheCleaner" parent="Theme.AppCompat.DayNight.NoActionBar" />
+    <style name="Theme.TurboCacheCleaner" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/turbo_background</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
 </resources>
